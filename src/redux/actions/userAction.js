@@ -116,13 +116,13 @@ export const addTransaction = (_data,history) => {
     }
 }
 
-export const getAllTransactions = () => {
+export const getAllTransactions = (query) => {
     return async (dispatch) => {
         try {
             dispatch(setLoader(true))
             const { data } = await axios({
                 method: "get",
-                url: `${urlHelper}/transaction`,
+                url: `${urlHelper}/transaction?month=${query}`,
             })
             dispatch(setLoader(false))
             if (data.success) {

@@ -4,6 +4,14 @@ import { Container, Row, Col, Button, Card, Table } from 'react-bootstrap'
 import { getAllTransactions, deleteTransaction } from '../redux/actions/userAction'
 import { useHistory, Link } from 'react-router-dom'
 
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+const date = new Date()
+const _month = monthNames[date.getMonth()]
+
+const months = []
+months.push(_month.toLowerCase())
 
 const Home = () => {
   const reduxState = useSelector(store => store)
@@ -18,13 +26,16 @@ const Home = () => {
       history.push('/')
     }
     else {
-      dispatch(getAllTransactions())
+      dispatch(getAllTransactions(JSON.stringify(months)))
     }
   }, [])
 
   const _eval = (data) => {
     let debit = 0
     let credit = 0
+    let personal = 0
+    let loan = 0
+    let home = 0
     for (var i = 0; i < data.length; i++) {
       if (data[i]["transactionType"] === "credit") {
         credit = credit + Number(data[i]["amount"])
@@ -32,24 +43,37 @@ const Home = () => {
       if (data[i]["transactionType"] === "debit") {
         debit = debit + Number(data[i]["amount"])
       }
+      if (data[i]["transactionDescription"].startsWith("p-")) {
+        personal = personal + Number(data[i]["amount"])
+      }
+      if (data[i]["transactionDescription"].startsWith("h-")) {
+        home = home + Number(data[i]["amount"])
+      }
+      if (data[i]["transactionDescription"].startsWith("l-")) {
+        loan = loan + Number(data[i]["amount"])
+      }
     }
     return {
       "debit": debit,
-      "credit": credit
+      "credit": credit,
+      "personal": personal,
+      "loan": loan,
+      "home": home
     }
   }
 
   return (
     <>
       <Container>
-        {console.log("redux_data", userRoot)}
-
         <Row className="mt-5">
           <Col xs={12} md={8}>
             <h5>All Transactions</h5>
-            {userRoot.transactions.length !== 0 && <h6>Credit: {_eval(userRoot.transactions)["credit"]}</h6> }
-            {userRoot.transactions.length !== 0 && <h6>Debit: {_eval(userRoot.transactions)["debit"]}</h6> }
-            {userRoot.transactions.length !== 0 && <h6>Limit Left: {_eval(userRoot.transactions)["credit"] - _eval(userRoot.transactions)["debit"]}</h6> }
+            {userRoot.transactions.length !== 0 && <h6>Credit: {_eval(userRoot.transactions)["credit"]}</h6>}
+            {userRoot.transactions.length !== 0 && <h6>Debit: {_eval(userRoot.transactions)["debit"]}</h6>}
+            {userRoot.transactions.length !== 0 && <h6>Personal: {_eval(userRoot.transactions)["personal"]}</h6>}
+            {userRoot.transactions.length !== 0 && <h6>Home: {_eval(userRoot.transactions)["home"]}</h6>}
+            {userRoot.transactions.length !== 0 && <h6>Loan Paid: {_eval(userRoot.transactions)["loan"]}</h6>}
+            {userRoot.transactions.length !== 0 && <h6>Limit Left: {_eval(userRoot.transactions)["credit"] - _eval(userRoot.transactions)["debit"]}</h6>}
 
             <Table striped bordered hover>
               <thead>
