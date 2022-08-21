@@ -3,7 +3,7 @@ const initialState = {
     isAuthenticated: false,
     loader: false,
     transactions: [],
-    transactionDescriptions: [],
+    categories: [],
 }
 
 
@@ -34,10 +34,16 @@ const userReducer = (state = initialState, action) => {
                 transactions: action.payload,
                 loader: false
             }
-        case "SET_TRANSACTION_DESCRIPTIONS":
+        case "SET_CATEGORIES":
             return {
                 ...state,
-                transactionDescriptions: action.payload,
+                categories: action.payload,
+                loader: false,
+            }
+        case "SET_CATEGORY":
+            return {
+                ...state,
+                categories: [...state.categories, action.payload],
                 loader: false,
             }
         case "DELETE_TRANSACTION":

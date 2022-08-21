@@ -142,21 +142,20 @@ export const getAllTransactions = (query) => {
     }
 }
 
-export const getAllTransactionDescriptions = () => {
+export const getAllCategories = () => {
     return async (dispatch) => {
         try {
             dispatch(setLoader(true))
             const { data } = await axios({
                 method: "get",
-                url: `${urlHelper}/transactiondescription`,
+                url: `${urlHelper}/transaction/category`,
             })
             dispatch(setLoader(false))
             if (data.success) {
                 if (data.data.length > 0){
-                    const _data = data.data.map(d => d.title)
                     dispatch({
-                        type: "SET_TRANSACTION_DESCRIPTIONS",
-                        payload: _data
+                        type: "SET_CATEGORIES",
+                        payload: data.data
                     })
                 }
             }
@@ -167,6 +166,34 @@ export const getAllTransactionDescriptions = () => {
         catch (err) {
             dispatch(setLoader(false))
             console.log("Error in getAllTransactionDescriptions", err)
+        }
+    }
+}
+
+export const addCategory = (_data)=>{
+    return async(dispatch)=>{
+        try{
+            dispatch(setLoader(true))
+            const { data } = await axios({
+                method: "post",
+                url: `${urlHelper}/transaction/category`,
+                data: _data
+            })
+            dispatch(setLoader(false))
+            if (data.success) {
+                dispatch({
+                    type: "SET_CATEGORY",
+                    payload: data.data
+                })
+            }
+            else {
+                alert(data.message)
+            }
+
+        }
+        catch(err){
+            dispatch(setLoader(false))
+            console.log("Error in addCategory", err)
         }
     }
 }
