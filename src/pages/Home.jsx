@@ -30,11 +30,20 @@ const Home = () => {
     }
   }, [])
 
-  const _eval = (data) => {
+  const _eval2 = (category)=>{
+    let total;
+    for (const d of userRoot.transactions){
+      if(d["category"][category] === category){
+        total = total + Number(d["amount"])
+      }
+    }
+    return total
+  }
+
+  const _eval = () => {
     let debit = 0
     let credit = 0
-
-    for (const d of data){
+    for (const d of userRoot.transactions){
       if(d["transactionType"] === "credit"){
         credit = credit + Number(d["amount"])
       }
@@ -55,13 +64,13 @@ const Home = () => {
         <Row className="mt-5">
           <Col xs={12} md={8}>
             <h5>All Transactions</h5>
-            {userRoot.transactions.length !== 0 && <h6>CREDIT: {_eval(userRoot.transactions)["credit"]}</h6>}
-            {userRoot.transactions.length !== 0 && <h6>DEBIT: {_eval(userRoot.transactions)["debit"]}</h6>}
-            {userRoot.transactions.length !== 0 && <h6>LIMIT LEFT: {_eval(userRoot.transactions)["credit"] - _eval(userRoot.transactions)["debit"]}</h6>}
+            {userRoot.transactions.length !== 0 && <h6>CREDIT: {_eval()["credit"]}</h6>}
+            {userRoot.transactions.length !== 0 && <h6>DEBIT: {_eval()["debit"]}</h6>}
+            {userRoot.transactions.length !== 0 && <h6>LIMIT LEFT: {_eval()["credit"] - _eval()["debit"]}</h6>}
             
             {
               userRoot.categories.length !== 0 && userRoot.categories.map((d)=>(
-                <h6>{d.title.toUpperCase() + ": "}  {d.total}</h6>
+                <h6>{d.title.toUpperCase() + ": "}  {_eval2(d.title)}</h6>
               ))
             }
 
