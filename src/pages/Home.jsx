@@ -31,9 +31,9 @@ const Home = () => {
   }, [])
 
   const _eval2 = (category)=>{
-    let total;
+    let total = 0;
     for (const d of userRoot.transactions){
-      if(d["category"][category] === category){
+      if(d["category"]["title"] == category){
         total = total + Number(d["amount"])
       }
     }
@@ -69,7 +69,7 @@ const Home = () => {
             {userRoot.transactions.length !== 0 && <h6>LIMIT LEFT: {_eval()["credit"] - _eval()["debit"]}</h6>}
             
             {
-              userRoot.categories.length !== 0 && userRoot.categories.map((d)=>(
+              userRoot.transactions.length !== 0 && userRoot.categories.length !== 0 &&userRoot.categories.map((d)=>(
                 <h6>{d.title.toUpperCase() + ": "}  {_eval2(d.title)}</h6>
               ))
             }
